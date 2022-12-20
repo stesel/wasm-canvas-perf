@@ -1,2 +1,2 @@
 # wasm-canvas-perf
-Performance comparison wasm canvas with html canvas
+Performance comparison html canvas with wasm canvas
