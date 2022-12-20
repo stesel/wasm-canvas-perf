@@ -1,0 +1,12 @@
+{
+  "name": "wasm-canvas-perf",
+  "version": "1.0.0",
+  "description": "Performance comparison js canvas with wasm canvas",
+  "scripts": {
+    "build": "cp -a ./page/. ./dist",
+    "start": "serve ./dist"
+  },
+  "devDependencies": {
+    "serve": "^14.1.2"
+  }
+}
