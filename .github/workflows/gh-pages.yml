@@ -1,0 +1,48 @@
+name: github pages
+
+on:
+  push:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  gh-pages:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: js-canvas
+        working-directory: ./js-canvas
+        run: |
+          npm ci
+          npm run build
+          
+      - name: wasm-canvas
+        working-directory: ./wasm-canvas
+        run: |
+          sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev
+          rustup target add wasm32-unknown-unknown
+          cargo install -f wasm-bindgen-cli
+          npm ci
+          npm run build
+      
+      - name: js-wasm-canvas
+        run: |
+          npm ci
+          npm run build
+        
+      - name: merge dist
+        run: |
+          cp -a ./js-canvas//page/. ./dist
+          cp -a ./wasm-canvas//page/. ./dist
+        
+      - name: deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: gh-pages
+          folder: dist
+        
