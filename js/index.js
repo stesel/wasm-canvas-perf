@@ -1,15 +1,15 @@
 "use strict";
-var canvasSize = 500;
-var circleSize = 5;
-var lineWidth = 1;
-var maxSpeed = 3;
-var circleAmmount = 3000;
-var circles = [];
+const canvasSize = 500;
+const circleSize = 5;
+const lineWidth = 1;
+const maxSpeed = 3;
+const circleAmmount = 3000;
+const circles = [];
 function getCircleCanvas() {
-    var circleCanvas = document.createElement("canvas");
+    const circleCanvas = document.createElement("canvas");
     circleCanvas.width = circleSize;
     circleCanvas.height = circleSize;
-    var circleContext2d = circleCanvas.getContext("2d");
+    const circleContext2d = circleCanvas.getContext("2d");
     circleContext2d.strokeStyle = "#aaa";
     circleContext2d.lineWidth = lineWidth;
     circleContext2d.beginPath();
@@ -17,33 +17,33 @@ function getCircleCanvas() {
     circleContext2d.stroke();
     return circleCanvas;
 }
-var circleCanvas = getCircleCanvas();
-var canvas = document.getElementById("canvas");
+const circleCanvas = getCircleCanvas();
+const canvas = document.getElementById("canvas");
 canvas.width = canvasSize;
 canvas.height = canvasSize;
-var context2d = canvas.getContext("2d");
+const context2d = canvas.getContext("2d");
 function getRandomPosition() {
     return Math.random() * (canvasSize - circleSize);
 }
 function getRandomSpeed() {
-    var speed = 0.1 + Math.random() * (maxSpeed - 0.1);
+    const speed = 0.1 + Math.random() * (maxSpeed - 0.1);
     return Math.random() > 0.5 ? speed : -speed;
 }
 function initCircles() {
-    for (var _ = 0; _ < circleAmmount; _++) {
+    for (let _ = 0; _ < circleAmmount; _++) {
         circles.push({
             x: getRandomPosition(),
             y: getRandomPosition(),
             speedX: getRandomSpeed(),
-            speedY: getRandomSpeed()
+            speedY: getRandomSpeed(),
         });
     }
 }
-var fps = 0;
-var fpsCounter = 0;
-var fpsTimestamp = 0;
-var fpsCount = 10;
-var second = 1000;
+let fps = 0;
+let fpsCounter = 0;
+let fpsTimestamp = 0;
+const fpsCount = 10;
+const second = 1000;
 function initFPSText() {
     context2d.fillStyle = "#0f0";
     context2d.font = "14px Helvetica";
@@ -52,10 +52,10 @@ function initFPSText() {
     context2d.fillText("fps: " + fps.toPrecision(4), 10, 10);
 }
 function update() {
-    window.requestAnimationFrame(function (time) {
+    window.requestAnimationFrame((time) => {
         context2d.clearRect(0, 0, canvasSize, canvasSize);
-        for (var i = 0; i < circles.length; i++) {
-            var circle = circles[i];
+        for (let i = 0; i < circles.length; i++) {
+            const circle = circles[i];
             if ((circle.x < 0 && circle.speedX < 0) ||
                 (circle.x > canvasSize - circleSize && circle.speedX > 0)) {
                 circle.speedX = -circle.speedX;
@@ -64,12 +64,12 @@ function update() {
                 (circle.y > canvasSize - circleSize && circle.speedY > 0)) {
                 circle.speedY = -circle.speedY;
             }
-            for (var j = 0; j < circles.length; j++) {
+            for (let j = 0; j < circles.length; j++) {
                 if (j === i) {
                     continue;
                 }
-                var next = circles[j];
-                var distance = Math.sqrt(Math.pow(next.x - circle.x, 2) + Math.pow(next.y - circle.y, 2));
+                const next = circles[j];
+                const distance = Math.sqrt(Math.pow(next.x - circle.x, 2) + Math.pow(next.y - circle.y, 2));
                 if (distance < circleSize) {
                     circle.speedX = -circle.speedX;
                     circle.speedY = -circle.speedY;
@@ -81,7 +81,7 @@ function update() {
         }
         fpsCounter++;
         if (fpsCounter % fpsCount === 0) {
-            var delta = time - fpsTimestamp;
+            const delta = time - fpsTimestamp;
             fps = (second * fpsCount) / delta;
             fpsTimestamp = time;
         }
@@ -90,11 +90,10 @@ function update() {
     requestUpdate();
 }
 function requestUpdate() {
-    window.requestAnimationFrame(function () {
+    window.requestAnimationFrame(() => {
         update();
     });
 }
 initCircles();
 initFPSText();
 update();
-//# sourceMappingURL=index.js.map
