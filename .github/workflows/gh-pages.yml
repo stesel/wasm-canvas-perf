@@ -37,8 +37,8 @@ jobs:
         
       - name: merge dist
         run: |
-          cp -a ./js-canvas//page/. ./dist
-          cp -a ./wasm-canvas//page/. ./dist
+          cp -a ./js-canvas/dist/. ./dist/js
+          cp -a ./wasm-canvas/dist/. ./dist/wasm
         
       - name: deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.3.3
