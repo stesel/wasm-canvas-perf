@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>wasm-canvas</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <canvas id="canvas" />
+    <script type="module">
+      import init, { render_circles } from "./wasm_canvas.js";
+      init().then(() => render_circles());
+    </script>
+  </body>
+</html>
