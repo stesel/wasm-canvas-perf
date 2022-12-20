@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>wasm-canvas</title>
+    <title>html-wasm-canvas</title>
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <canvas id="canvas" />
-    <script type="module">
-      import init, { render_circles } from "./wasm_canvas.js";
-      init().then(() => render_circles());
-    </script>
+    <h1>Performance comparison js canvas with wasm canvas</h1>
+    <nav>
+      <a href="/js/">JS</a> |
+      <a href="/wasm/">WASM</a>
+    </nav>
   </body>
 </html>
