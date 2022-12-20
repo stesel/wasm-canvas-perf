@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
     "strict": true,
-    "module": "commonjs",
+    "module": "esnext",
+    "target": "esnext",
     "jsx": "preserve",
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "allowJs": true,
+    "sourceMap": false,
     "lib": [
       "es6",
       "dom"
