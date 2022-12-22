@@ -2,7 +2,12 @@ const canvasSize = 500;
 const circleSize = 5;
 const lineWidth = 1;
 const maxSpeed = 3;
-const circleAmmount = 3000;
+const defaultCircleAmmount = 3000;
+
+const urlParams = new URLSearchParams(window.location.search);
+const particles = urlParams.get('particles');
+
+const circleAmmount = particles ? Number(particles) : 3000;
 
 interface Circle {
   x: number;

@@ -1,6 +1,6 @@
 {
   "name": "js-canvas",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "js-canvas test",
   "scripts": {
     "build": "rm -rf ./dist && tsc && cp -a ./page/. ./dist",

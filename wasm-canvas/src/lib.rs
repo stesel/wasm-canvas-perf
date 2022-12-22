@@ -2,7 +2,7 @@ use std::{cell::RefCell, f64::consts::PI, rc::Rc};
 
 use rand::random;
 use wasm_bindgen::{prelude::*, JsCast};
-use web_sys::{self, CanvasRenderingContext2d, HtmlCanvasElement};
+use web_sys::{self, CanvasRenderingContext2d, HtmlCanvasElement, UrlSearchParams};
 
 #[derive(Clone)]
 struct Circle {
@@ -17,7 +17,7 @@ static CIRCLE_SIZE: f64 = 5.0;
 static CIRCLE_RADIUS: f64 = CIRCLE_SIZE / 2.0;
 static LINE_WIDTH: f64 = 1.0;
 static MAX_SPEED: f64 = 3.0;
-static CIRCLE_AMMOUNT: u32 = 3000;
+static DEFAULT_CIRCLE_AMOUNT: u32 = 3000;
 
 fn window() -> web_sys::Window {
     web_sys::window().unwrap()
@@ -31,6 +31,19 @@ fn request_animation_frame(f: &Closure<dyn FnMut(f64)>) {
     window()
         .request_animation_frame(f.as_ref().unchecked_ref())
         .unwrap();
+}
+
+fn get_circle_amount() -> u32 {
+    let uri_search_params =
+        UrlSearchParams::new_with_str(window().location().search().unwrap().as_str()).unwrap();
+
+    let circle_amout: u32 = uri_search_params
+        .get("particles")
+        .unwrap_or(DEFAULT_CIRCLE_AMOUNT.to_string())
+        .parse()
+        .unwrap();
+
+    circle_amout
 }
 
 fn get_circle_canvas() -> web_sys::HtmlCanvasElement {
@@ -82,10 +95,10 @@ fn get_random_speed() -> f64 {
     }
 }
 
-fn get_circles() -> Vec<Circle> {
+fn get_circles(circle_amout: u32) -> Vec<Circle> {
     let mut circles: Vec<Circle> = vec![];
 
-    for _ in 0..CIRCLE_AMMOUNT {
+    for _ in 0..circle_amout {
         circles.push(Circle {
             x: get_random_position(),
             y: get_random_position(),
@@ -106,6 +119,8 @@ fn init_fps_text(context_2d: &CanvasRenderingContext2d) {
 
 #[wasm_bindgen]
 pub fn render_circles() {
+    let circle_amount = get_circle_amount();
+
     let circle_canvas = get_circle_canvas();
 
     let canvas = document().get_element_by_id("canvas").unwrap();
@@ -127,7 +142,7 @@ pub fn render_circles() {
 
     init_fps_text(&context_2d);
 
-    let mut circles = get_circles();
+    let mut circles = get_circles(circle_amount);
 
     let mut fps = 0_f64;
     let mut fps_counter = 0_u32;
@@ -143,7 +158,7 @@ pub fn render_circles() {
 
         let next_circles = circles.to_vec();
 
-        for i in 0..CIRCLE_AMMOUNT as usize {
+        for i in 0..circle_amount as usize {
             let mut circle = circles.get_mut(i).unwrap();
 
             if (circle.x < 0.0 && circle.speed_x < 0.0)
@@ -158,7 +173,7 @@ pub fn render_circles() {
                 circle.speed_y = -circle.speed_y;
             }
 
-            for j in 0..CIRCLE_AMMOUNT as usize {
+            for j in 0..circle_amount as usize {
                 if j == i {
                     continue;
                 }
