@@ -3,7 +3,6 @@
     "strict": true,
     "module": "esnext",
     "target": "esnext",
-    "jsx": "preserve",
     "sourceMap": false,
     "lib": [
       "es6",
