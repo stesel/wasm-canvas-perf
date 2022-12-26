@@ -2,13 +2,14 @@
   "compilerOptions": {
     "strict": true,
     "module": "commonjs",
-    "target": "esnext",
+    "target": "ES2015",
     "sourceMap": false,
     "lib": ["esnext", "dom"],
     "rootDir": "src",
     "outDir": "./dist",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   }
 }

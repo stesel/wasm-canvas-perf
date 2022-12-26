@@ -4,7 +4,9 @@
   "description": "Automation for js canvas and wasm canvas",
   "scripts": {
     "js-memory": "ts-node src/js-memory.ts --esm",
-    "wasm-memory": "ts-node src/wasm-memory.ts --esm"
+    "wasm-memory": "ts-node src/wasm-memory.ts --esm",
+    "js-fps": "ts-node src/js-fps.ts --esm",
+    "wasm-fps": "ts-node src/wasm-fps.ts --esm"
   },
   "devDependencies": {
     "puppeteer": "^19.4.1",

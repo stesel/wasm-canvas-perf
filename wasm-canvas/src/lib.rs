@@ -20,6 +20,8 @@ static LINE_WIDTH: f64 = 1.0;
 static MAX_SPEED: f64 = 3.0;
 static DEFAULT_CIRCLE_AMOUNT: u32 = 3000;
 
+static FPS_KEY: &str = "__FPS__";
+
 fn window() -> web_sys::Window {
     web_sys::window().unwrap()
 }
@@ -205,7 +207,7 @@ pub fn render_circles() {
 
             Reflect::set(
                 &JsValue::from(window()),
-                &JsValue::from("__FPS__"),
+                &JsValue::from(FPS_KEY),
                 &fps.into()
             ).unwrap();
 

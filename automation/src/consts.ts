@@ -1,3 +1,7 @@
+export const FPS_TIMEOUT = 5000;
+export const FPS_COUNT = 5;
+export const FPS_KEY = "__FPS__";
+
 export const MEMORY_TIMEOUT = 5000;
 
 export const BYTES_IN_KBYTE = 1024;
