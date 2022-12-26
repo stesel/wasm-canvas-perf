@@ -85,7 +85,7 @@ function update() {
         fpsCounter++;
         if (fpsCounter % fpsCount === 0) {
             const delta = time - fpsTimestamp;
-            fps = (second * fpsCount) / delta * 100;
+            fps = (second * fpsCount) / delta;
             window.__FPS__ = fps;
             fpsTimestamp = time;
         }
