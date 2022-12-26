@@ -85,7 +85,8 @@ function update() {
         fpsCounter++;
         if (fpsCounter % fpsCount === 0) {
             const delta = time - fpsTimestamp;
-            fps = (second * fpsCount) / delta;
+            fps = (second * fpsCount) / delta * 100;
+            window.__FPS__ = fps;
             fpsTimestamp = time;
         }
         context2d.fillText("fps: " + fps.toPrecision(4), 10, 10);
