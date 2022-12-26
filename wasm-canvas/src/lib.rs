@@ -3,6 +3,7 @@ use std::{cell::RefCell, f64::consts::PI, rc::Rc};
 use rand::random;
 use wasm_bindgen::{prelude::*, JsCast};
 use web_sys::{self, CanvasRenderingContext2d, HtmlCanvasElement, UrlSearchParams};
+use js_sys::{self, Reflect};
 
 #[derive(Clone)]
 struct Circle {
@@ -201,6 +202,13 @@ pub fn render_circles() {
         if fps_counter % fps_count == 0 {
             let delta: f64 = time - fps_timestamp;
             fps = (second * fps_count as f64) / delta;
+
+            Reflect::set(
+                &JsValue::from(window()),
+                &JsValue::from("__FPS__"),
+                &fps.into()
+            ).unwrap();
+
             fps_timestamp = time;
         }
 

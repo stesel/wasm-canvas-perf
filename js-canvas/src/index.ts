@@ -9,6 +9,10 @@ const particles = urlParams.get('particles');
 
 const circleAmmount = particles ? Number(particles) : 3000;
 
+interface Window {
+  __FPS__?: number;
+}
+
 interface Circle {
   x: number;
   y: number;
@@ -127,7 +131,8 @@ function update() {
 
     if (fpsCounter % fpsCount === 0) {
       const delta = time - fpsTimestamp;
-      fps = (second * fpsCount) / delta;
+      fps = (second * fpsCount) / delta * 100;
+      window.__FPS__ = fps;
 
       fpsTimestamp = time;
     }
