@@ -2,13 +2,13 @@
 /* eslint-disable */
 /**
 */
-export function render_circles(): void;
+export function render_particles(): void;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly render_circles: () => void;
+  readonly render_particles: () => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;

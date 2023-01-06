@@ -206,8 +206,8 @@ function __wbg_adapter_26(arg0, arg1, arg2) {
 
 /**
 */
-export function render_circles() {
-    wasm.render_circles();
+export function render_particles() {
+    wasm.render_particles();
 }
 
 function isLikeNone(x) {
