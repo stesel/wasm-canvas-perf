@@ -1,12 +1,12 @@
 use std::{cell::RefCell, f64::consts::PI, rc::Rc};
 
+use js_sys::{self, Reflect};
 use rand::random;
 use wasm_bindgen::{prelude::*, JsCast};
 use web_sys::{self, CanvasRenderingContext2d, HtmlCanvasElement, UrlSearchParams};
-use js_sys::{self, Reflect};
 
 #[derive(Clone)]
-struct Circle {
+struct Particle {
     x: f64,
     y: f64,
     speed_x: f64,
@@ -36,20 +36,20 @@ fn request_animation_frame(f: &Closure<dyn FnMut(f64)>) {
         .unwrap();
 }
 
-fn get_circle_amount() -> u32 {
+fn get_particle_amount() -> u32 {
     let uri_search_params =
         UrlSearchParams::new_with_str(window().location().search().unwrap().as_str()).unwrap();
 
-    let circle_amout: u32 = uri_search_params
+    let particle_amout: u32 = uri_search_params
         .get("particles")
         .unwrap_or(DEFAULT_CIRCLE_AMOUNT.to_string())
         .parse()
         .unwrap();
 
-    circle_amout
+    particle_amout
 }
 
-fn get_circle_canvas() -> web_sys::HtmlCanvasElement {
+fn get_particle_canvas() -> web_sys::HtmlCanvasElement {
     let canvas = document().create_element("canvas").unwrap();
 
     let canvas: web_sys::HtmlCanvasElement = canvas
@@ -98,11 +98,11 @@ fn get_random_speed() -> f64 {
     }
 }
 
-fn get_circles(circle_amout: u32) -> Vec<Circle> {
-    let mut circles: Vec<Circle> = vec![];
+fn get_particles(particle_amout: u32) -> Vec<Particle> {
+    let mut particles: Vec<Particle> = vec![];
 
-    for _ in 0..circle_amout {
-        circles.push(Circle {
+    for _ in 0..particle_amout {
+        particles.push(Particle {
             x: get_random_position(),
             y: get_random_position(),
             speed_x: get_random_speed(),
@@ -110,7 +110,7 @@ fn get_circles(circle_amout: u32) -> Vec<Circle> {
         })
     }
 
-    circles
+    particles
 }
 
 fn init_fps_text(context_2d: &CanvasRenderingContext2d) {
@@ -121,10 +121,10 @@ fn init_fps_text(context_2d: &CanvasRenderingContext2d) {
 }
 
 #[wasm_bindgen]
-pub fn render_circles() {
-    let circle_amount = get_circle_amount();
+pub fn render_particles() {
+    let particle_amount = get_particle_amount();
 
-    let circle_canvas = get_circle_canvas();
+    let particle_canvas = get_particle_canvas();
 
     let canvas = document().get_element_by_id("canvas").unwrap();
 
@@ -145,7 +145,7 @@ pub fn render_circles() {
 
     init_fps_text(&context_2d);
 
-    let mut circles = get_circles(circle_amount);
+    let mut particles = get_particles(particle_amount);
 
     let mut fps = 0_f64;
     let mut fps_counter = 0_u32;
@@ -153,50 +153,50 @@ pub fn render_circles() {
     let fps_count = 10_u32;
     let second = 1000_f64;
 
-    let f: Rc<RefCell<Option<Closure<dyn FnMut(f64)>>>> = Rc::new(RefCell::new(None));
-    let g = f.clone();
+    let update: Rc<RefCell<Option<Closure<dyn FnMut(f64)>>>> = Rc::new(RefCell::new(None));
+    let request_update = update.clone();
 
-    *g.borrow_mut() = Some(Closure::new(move |time| {
+    *request_update.borrow_mut() = Some(Closure::new(move |time| {
         context_2d.clear_rect(0.0, 0.0, CANVAS_SIZE, CANVAS_SIZE);
 
-        let next_circles = circles.to_vec();
+        let next_particles = particles.to_vec();
 
-        for i in 0..circle_amount as usize {
-            let mut circle = circles.get_mut(i).unwrap();
+        for i in 0..particle_amount as usize {
+            let mut particle = particles.get_mut(i).unwrap();
 
-            if (circle.x < 0.0 && circle.speed_x < 0.0)
-                || (circle.x > CANVAS_SIZE - CIRCLE_SIZE && circle.speed_x > 0.0)
+            if (particle.x < 0.0 && particle.speed_x < 0.0)
+                || (particle.x > CANVAS_SIZE - CIRCLE_SIZE && particle.speed_x > 0.0)
             {
-                circle.speed_x = -circle.speed_x;
+                particle.speed_x = -particle.speed_x;
             }
 
-            if (circle.y < 0.0 && circle.speed_y < 0.0)
-                || (circle.y > CANVAS_SIZE - CIRCLE_SIZE && circle.speed_y > 0.0)
+            if (particle.y < 0.0 && particle.speed_y < 0.0)
+                || (particle.y > CANVAS_SIZE - CIRCLE_SIZE && particle.speed_y > 0.0)
             {
-                circle.speed_y = -circle.speed_y;
+                particle.speed_y = -particle.speed_y;
             }
 
-            for j in 0..circle_amount as usize {
+            for j in 0..particle_amount as usize {
                 if j == i {
                     continue;
                 }
 
-                let next = next_circles.get(j).unwrap();
+                let next = next_particles.get(j).unwrap();
 
                 let distance =
-                    ((next.x - circle.x).powf(2.0) + (next.y - circle.y).powf(2.0)).sqrt();
+                    ((next.x - particle.x).powf(2.0) + (next.y - particle.y).powf(2.0)).sqrt();
 
                 if distance < CIRCLE_SIZE {
-                    circle.speed_x = -circle.speed_x;
-                    circle.speed_y = -circle.speed_y;
+                    particle.speed_x = -particle.speed_x;
+                    particle.speed_y = -particle.speed_y;
                 }
             }
 
-            circle.x += circle.speed_x;
-            circle.y += circle.speed_y;
+            particle.x += particle.speed_x;
+            particle.y += particle.speed_y;
 
             context_2d
-                .draw_image_with_html_canvas_element(&circle_canvas, circle.x, circle.y)
+                .draw_image_with_html_canvas_element(&particle_canvas, particle.x, particle.y)
                 .unwrap();
         }
 
@@ -208,8 +208,9 @@ pub fn render_circles() {
             Reflect::set(
                 &JsValue::from(window()),
                 &JsValue::from(FPS_KEY),
-                &fps.into()
-            ).unwrap();
+                &fps.into(),
+            )
+            .unwrap();
 
             fps_timestamp = time;
         }
@@ -218,8 +219,8 @@ pub fn render_circles() {
             .fill_text(format!("fps: {:.2}", fps).as_str(), 10.0, 10.0)
             .unwrap();
 
-        request_animation_frame(f.borrow().as_ref().unwrap());
+        request_animation_frame(update.borrow().as_ref().unwrap());
     }));
 
-    request_animation_frame(g.borrow().as_ref().unwrap());
+    request_animation_frame(request_update.borrow().as_ref().unwrap());
 }
