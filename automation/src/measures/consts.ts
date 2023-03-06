@@ -1,3 +1,8 @@
+export const BASE_URL = "https://stesel.github.io/wasm-canvas-perf/";
+
+export const CPU_TIMEOUT = 5000;
+export const CPU_COUNT = 5;
+
 export const FPS_TIMEOUT = 5000;
 export const FPS_COUNT = 5;
 export const FPS_KEY = "__FPS__";

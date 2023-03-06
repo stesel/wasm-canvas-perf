@@ -3,6 +3,8 @@
   "version": "0.1.1",
   "description": "Automation for js canvas and wasm canvas",
   "scripts": {
+    "js-cpu": "ts-node src/js-cpu.ts --esm",
+    "wasm-cpu": "ts-node src/wasm-cpu.ts --esm",
     "js-memory": "ts-node src/js-memory.ts --esm",
     "wasm-memory": "ts-node src/wasm-memory.ts --esm",
     "js-fps": "ts-node src/js-fps.ts --esm",
