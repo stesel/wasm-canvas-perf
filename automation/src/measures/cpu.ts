@@ -20,7 +20,7 @@ export function measureCPU(version: "js" | "wasm") {
   async function runBrowser() {
     for (
       let particles = MIN_PARTICLES;
-      particles <= MIN_PARTICLES * 5;
+      particles <= MAX_PARTICLES;
       particles += PARTICLES_STEP
     ) {
       const browser = await puppeteer.launch();
