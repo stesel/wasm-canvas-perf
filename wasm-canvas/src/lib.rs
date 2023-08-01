@@ -162,7 +162,7 @@ pub fn render_particles() {
         let next_particles = particles.to_vec();
 
         for i in 0..particle_amount as usize {
-            let mut particle = particles.get_mut(i).unwrap();
+            let particle = particles.get_mut(i).unwrap();
 
             if (particle.x < 0.0 && particle.speed_x < 0.0)
                 || (particle.x > CANVAS_SIZE - CIRCLE_SIZE && particle.speed_x > 0.0)
