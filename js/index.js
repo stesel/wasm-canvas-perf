@@ -3,10 +3,10 @@ const canvasSize = 500;
 const particleSize = 5;
 const lineWidth = 1;
 const maxSpeed = 3;
-const defaultParticleAmmount = 3000;
+const defaultParticleAmount = 3000;
 const urlParams = new URLSearchParams(window.location.search);
 const rawParticles = urlParams.get("particles");
-const particleAmmount = rawParticles ? Number(rawParticles) : 3000;
+const particleAmount = rawParticles ? Number(rawParticles) : defaultParticleAmount;
 const particles = [];
 function getParticleCanvas() {
     const particleCanvas = document.createElement("canvas");
@@ -33,7 +33,7 @@ function getRandomSpeed() {
     return Math.random() > 0.5 ? speed : -speed;
 }
 function initParticles() {
-    for (let _ = 0; _ < particleAmmount; _++) {
+    for (let _ = 0; _ < particleAmount; _++) {
         particles.push({
             x: getRandomPosition(),
             y: getRandomPosition(),
