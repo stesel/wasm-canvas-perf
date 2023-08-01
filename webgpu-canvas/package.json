@@ -1,0 +1,14 @@
+{
+  "name": "webgpu-canvas",
+  "version": "0.1.1",
+  "description": "webgpu-canvas test",
+  "scripts": {
+    "build": "rm -rf ./dist && tsc && cp -a ./page/. ./dist",
+    "start": "serve ./dist"
+  },
+  "devDependencies": {
+    "@webgpu/types": "^0.1.34",
+    "serve": "^14.1.2",
+    "typescript": "^4.9.4"
+  }
+}
