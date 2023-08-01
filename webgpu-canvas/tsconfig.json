@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "esnext",
+    "target": "esnext",
+    "sourceMap": false,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "rootDir": "src",
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "typeRoots": [ "./node_modules/@webgpu/types", "./node_modules/@types"]
+  }
+}

@@ -29,6 +29,12 @@ jobs:
           cargo install -f wasm-bindgen-cli
           npm ci
           npm run build
+
+      - name: webgpu-canvas
+        working-directory: ./webgpu-canvas
+        run: |
+          npm ci
+          npm run build
       
       - name: js-wasm-canvas
         run: |
@@ -39,6 +45,7 @@ jobs:
         run: |
           cp -a ./js-canvas/dist/. ./dist/js
           cp -a ./wasm-canvas/dist/. ./dist/wasm
+          cp -a ./webgpu-canvas/dist/. ./dist/webgpu
         
       - name: deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.3.3
