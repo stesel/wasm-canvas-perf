@@ -7,8 +7,25 @@ body {
   background-color: #000;
 }
 
-canvas {
+section {
+  position: relative;
   width: 500px;
   height: 500px;
   border: 1px solid #fff;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+#fps {
+  position: absolute;
+  font-size: 14px;
+  line-height: 14px;
+  font-family: 'Helvetica';
+  top: 0;
+  left: 0;
+  margin: 10px;
+  color: #0f0;
 }
