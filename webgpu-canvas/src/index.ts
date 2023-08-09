@@ -140,16 +140,15 @@ async function initWebGPU() {
       @group(0) @binding(2) var<storage, read_write> particleStateOut: array<f32>;
 
       @compute
-      @workgroup_size(${WORKGROUP_SIZE}, ${WORKGROUP_SIZE})
+      @workgroup_size(${WORKGROUP_SIZE})
       fn computeMain(@builtin(global_invocation_id) particle: vec3u) {
-        let invocationId: u32 = particle.x + particle.y * ${WORKGROUP_SIZE};
         let particleAmount = u32(particleUniforms.particleAmount);
 
-        if (invocationId >= particleAmount) {
+        if (particle.x >= particleAmount) {
           return;
         }
-  
-        let index = (particle.x + particle.y * ${WORKGROUP_SIZE}) * stateOffset;
+
+        let index = particle.x * stateOffset;
 
         init_random(index, particleUniforms.seed);
 
@@ -403,8 +402,8 @@ async function initWebGPU() {
   initStatePass.setPipeline(initStatePipeline);
   initStatePass.setBindGroup(0, bindGroups[ step ]);
 
-  const initWorkgroupCount = Math.ceil(particleAmount / (WORKGROUP_SIZE * WORKGROUP_SIZE));
-  initStatePass.dispatchWorkgroups(initWorkgroupCount, initWorkgroupCount);
+  const workgroupCount = Math.ceil(particleAmount / WORKGROUP_SIZE);
+  initStatePass.dispatchWorkgroups(workgroupCount);
 
   initStatePass.end();
 
@@ -417,8 +416,6 @@ async function initWebGPU() {
   const fpsCount = 10;
   const second = 1000;
 
-  const updateWorkgroupCount = Math.ceil((particleAmount * particleAmount) / (WORKGROUP_SIZE * WORKGROUP_SIZE));
-
   function update(time: number) {
     step++;
 
@@ -429,30 +426,30 @@ async function initWebGPU() {
     updateStatePass.setPipeline(updateStatePipeline);
     updateStatePass.setBindGroup(0, bindGroups[ step % 2 ]);
 
-    updateStatePass.dispatchWorkgroups(updateWorkgroupCount, updateWorkgroupCount);
+    updateStatePass.dispatchWorkgroups(workgroupCount, workgroupCount);
 
     updateStatePass.end();
 
-    // const renderPass = encoder.beginRenderPass({
-    //   colorAttachments: [
-    //     {
-    //       view: context.getCurrentTexture().createView(),
-    //       loadOp: "clear",
-    //       clearValue: { r: 0, g: 0, b: 0, a: 1 },
-    //       storeOp: "store",
-    //     },
-    //   ],
-    // });
+    const renderPass = encoder.beginRenderPass({
+      colorAttachments: [
+        {
+          view: context.getCurrentTexture().createView(),
+          loadOp: "clear",
+          clearValue: { r: 0, g: 0, b: 0, a: 1 },
+          storeOp: "store",
+        },
+      ],
+    });
 
-    // renderPass.setPipeline(renderPipeline);
-    // renderPass.setVertexBuffer(0, vertexBuffer);
-    // renderPass.setBindGroup(0, bindGroups[ step % 2 ]);
-    // renderPass.draw(vertices.length / 2, particleAmount);
+    renderPass.setPipeline(renderPipeline);
+    renderPass.setVertexBuffer(0, vertexBuffer);
+    renderPass.setBindGroup(0, bindGroups[ step % 2 ]);
+    renderPass.draw(vertices.length / 2, particleAmount);
 
-    // renderPass.end();
+    renderPass.end();
 
-    // const commandBuffer = encoder.finish();
-    // device.queue.submit([ commandBuffer ]);
+    const commandBuffer = encoder.finish();
+    device.queue.submit([ commandBuffer ]);
 
     fpsCounter++;
 
