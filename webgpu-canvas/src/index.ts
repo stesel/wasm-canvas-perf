@@ -142,6 +142,13 @@ async function initWebGPU() {
       @compute
       @workgroup_size(${WORKGROUP_SIZE}, ${WORKGROUP_SIZE})
       fn computeMain(@builtin(global_invocation_id) particle: vec3u) {
+        let invocationId: u32 = particle.x + particle.y * ${WORKGROUP_SIZE};
+        let particleAmount = u32(particleUniforms.particleAmount);
+
+        if (invocationId >= particleAmount) {
+          return;
+        }
+  
         let index = (particle.x + particle.y * ${WORKGROUP_SIZE}) * stateOffset;
 
         init_random(index, particleUniforms.seed);
@@ -177,7 +184,14 @@ async function initWebGPU() {
       @compute
       @workgroup_size(${WORKGROUP_SIZE}, ${WORKGROUP_SIZE})
       fn computeMain(@builtin(global_invocation_id) particle: vec3u) {
-        let xIndex = (particle.x + particle.y * ${WORKGROUP_SIZE}) * stateOffset;
+        let invocationId: u32 = particle.x + particle.y * ${WORKGROUP_SIZE};
+        let particleAmount = u32(particleUniforms.particleAmount);
+
+        if (invocationId >= particleAmount) {
+          return;
+        }
+
+        let xIndex = invocationId * stateOffset;
         let yIndex = xIndex + 1;
 
         let speedXIndex = xIndex + 2;
@@ -198,8 +212,6 @@ async function initWebGPU() {
         if ((y >= 1 - halfSize && speedY > 0) || (y <= -1 + halfSize && speedY < 0)) {
           speedY = -speedY;
         }
-
-        let particleAmount = u32(particleUniforms.particleAmount);
 
         var i: u32 = 0;
 
