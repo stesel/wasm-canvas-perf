@@ -31,7 +31,7 @@ async function initWebGPU() {
         -1, -1, 1, 1, -1, 1,
     ]);
     const vertexBuffer = device.createBuffer({
-        label: "Cell vertices",
+        label: "Particle vertices",
         size: vertices.byteLength,
         usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
     });
