@@ -1,4 +1,4 @@
-# wasm-canvas-perf
+# wasm-canvas-perf [![github pages](https://github.com/stesel/wasm-canvas-perf/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/stesel/wasm-canvas-perf/actions/workflows/gh-pages.yml)
 Performance comparison js canvas with wasm canvas
 
 ## References
