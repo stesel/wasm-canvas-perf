@@ -7,6 +7,6 @@
     "start": "serve ./dist"
   },
   "devDependencies": {
-    "serve": "^14.1.2"
+    "serve": "^14.2.4"
   }
 }

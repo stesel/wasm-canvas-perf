@@ -67,7 +67,7 @@ fn get_particle_canvas() -> web_sys::HtmlCanvasElement {
         .dyn_into::<web_sys::CanvasRenderingContext2d>()
         .unwrap();
 
-    context.set_stroke_style(&"#aaa".into());
+    context.set_stroke_style_str("#aaa");
     context.set_line_width(LINE_WIDTH.into());
 
     context.begin_path();
@@ -114,7 +114,7 @@ fn get_particles(particle_amout: u32) -> Vec<Particle> {
 }
 
 fn init_fps_text(context_2d: &CanvasRenderingContext2d) {
-    context_2d.set_fill_style(&"#0f0".into());
+    context_2d.set_fill_style_str("#0f0");
     context_2d.set_font("14px Helvetica");
     context_2d.set_text_align("left");
     context_2d.set_text_baseline("top");
