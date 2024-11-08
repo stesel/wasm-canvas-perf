@@ -3,11 +3,13 @@ const canvasSizePx = 500;
 const particleSizePx = 5;
 const particleSize = particleSizePx / canvasSizePx;
 const defaultParticleAmount = 3000;
-const particleStateSize = 4 /* x, y, speedX, speedY */;
+const particleStateSize = 4; /* x, y, speedX, speedY */
 const urlParams = new URLSearchParams(window.location.search);
 const rawParticles = urlParams.get("particles");
-const particleAmount = rawParticles ? Number(rawParticles) : defaultParticleAmount;
-const fpsElement = document.getElementById('fps');
+const particleAmount = rawParticles
+    ? Number(rawParticles)
+    : defaultParticleAmount;
+const fpsElement = document.getElementById("fps");
 async function initWebGPU() {
     if (!navigator.gpu) {
         throw new Error("WebGPU not supported on this browser.");
@@ -36,7 +38,14 @@ async function initWebGPU() {
         usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
     });
     device.queue.writeBuffer(vertexBuffer, 0, vertices);
-    const uniformArray = new Float32Array([particleAmount, particleSize, Math.random(), Math.random(), Math.random(), Math.random()]);
+    const uniformArray = new Float32Array([
+        particleAmount,
+        particleSize,
+        Math.random(),
+        Math.random(),
+        Math.random(),
+        Math.random(),
+    ]);
     const uniformBuffer = device.createBuffer({
         label: "Particle Uniforms",
         size: 32,
@@ -59,7 +68,7 @@ async function initWebGPU() {
     device.queue.writeBuffer(particleStateBuffers[0], 0, particleStateArray);
     const vertexBufferLayout = {
         arrayStride: /* x */ 4 + /* y */ 4,
-        stepMode: 'vertex',
+        stepMode: "vertex",
         attributes: [
             {
                 format: "float32x2",
@@ -97,7 +106,7 @@ async function initWebGPU() {
       fn randomSpeed() -> f32 {
         let speed = minSpeed + random() * (maxSpeed - minSpeed);
 
-        if (random() > 0.5) {
+        if random() > 0.5 {
           return speed;
         } else {
           return -speed;
@@ -118,7 +127,7 @@ async function initWebGPU() {
       fn computeMain(@builtin(global_invocation_id) particle: vec3u) {
         let particleAmount = u32(particleUniforms.particleAmount);
 
-        if (particle.x >= particleAmount) {
+        if particle.x >= particleAmount {
           return;
         }
 
@@ -154,11 +163,11 @@ async function initWebGPU() {
       @group(0) @binding(2) var<storage, read_write> particleStateOut: array<f32>;
 
       @compute
-      @workgroup_size(${WORKGROUP_SIZE}, ${WORKGROUP_SIZE})
+      @workgroup_size(${WORKGROUP_SIZE})
       fn computeMain(@builtin(global_invocation_id) particle: vec3u) {
         let particleAmount = u32(particleUniforms.particleAmount);
 
-        if (particle.x >= particleAmount || particle.y >= particleAmount) {
+        if particle.x >= particleAmount {
           return;
         }
 
@@ -171,47 +180,40 @@ async function initWebGPU() {
         let x = particleStateIn[xIndex];
         let y = particleStateIn[yIndex];
 
-        var speedX: f32;
-        var speedY: f32;
+        var speedX = particleStateIn[speedXIndex];
+        var speedY = particleStateIn[speedYIndex];
 
-        if (particle.y == 0) {
-          speedX = particleStateIn[speedXIndex];
-          speedY = particleStateIn[speedYIndex];
+        let halfSize = particleUniforms.particleSize / 2;
 
-          let halfSize = particleUniforms.particleSize / 2;
-
-          if ((x >= 1 - halfSize && speedX > 0) || (x <= -1 + halfSize && speedX < 0)) {
-            speedX = -speedX;
-          }
+        if (x >= 1 - halfSize && speedX > 0) || (x <= -1 + halfSize && speedX < 0) {
+          speedX = -speedX;
+        }
   
-          if ((y >= 1 - halfSize && speedY > 0) || (y <= -1 + halfSize && speedY < 0)) {
-            speedY = -speedY;
-          }
-
-          particleStateOut[speedXIndex] = speedX;
-          particleStateOut[speedYIndex] = speedY;
+        if (y >= 1 - halfSize && speedY > 0) || (y <= -1 + halfSize && speedY < 0) {
+          speedY = -speedY;
         }
 
-        speedX = particleStateOut[speedXIndex];
-        speedY = particleStateOut[speedYIndex];
+        for (var i: u32 = 0; i < particleAmount; i += 1) {
+          let nextIndex = i * stateOffset;
 
-        let nextIndex = particle.y * stateOffset;
+          if nextIndex != xIndex {
+            let nextX = particleStateIn[nextIndex];
+            let nextY = particleStateIn[nextIndex + 1];
 
-        if nextIndex != xIndex {
-          let nextX = particleStateIn[nextIndex];
-          let nextY = particleStateIn[nextIndex + 1];
+            let dist = distance(x, y, nextX, nextY);
 
-          let dist = distance(x, y, nextX, nextY);
-          if dist <= particleUniforms.particleSize && dist > 0 {
-            particleStateOut[speedXIndex] = -speedX;
-            particleStateOut[speedYIndex] = -speedY;
+            if dist <= particleUniforms.particleSize && dist > 0 {
+              speedX = -speedX;
+              speedY = -speedY;
+            }
           }
         }
 
-        if(particle.y == particleAmount - 1) {
-          particleStateOut[xIndex] = x + speedX;
-          particleStateOut[yIndex] = y + speedY;
-        }
+        particleStateOut[speedXIndex] = speedX;
+        particleStateOut[speedYIndex] = speedY;
+
+        particleStateOut[xIndex] = x + speedX;
+        particleStateOut[yIndex] = y + speedY;
       }`,
     });
     const renderShaderModule = device.createShaderModule({
@@ -266,8 +268,7 @@ async function initWebGPU() {
             },
             {
                 binding: 1,
-                visibility: GPUShaderStage.VERTEX |
-                    GPUShaderStage.COMPUTE,
+                visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
                 buffer: { type: "read-only-storage" },
             },
             {
@@ -353,7 +354,7 @@ async function initWebGPU() {
             ],
         },
         primitive: {
-            topology: 'triangle-list',
+            topology: "triangle-list",
         },
     });
     let step = 0;
@@ -377,7 +378,7 @@ async function initWebGPU() {
         const updateStatePass = encoder.beginComputePass();
         updateStatePass.setPipeline(updateStatePipeline);
         updateStatePass.setBindGroup(0, bindGroups[step % 2]);
-        updateStatePass.dispatchWorkgroups(workgroupCount, workgroupCount);
+        updateStatePass.dispatchWorkgroups(workgroupCount);
         updateStatePass.end();
         const renderPass = encoder.beginRenderPass({
             colorAttachments: [
