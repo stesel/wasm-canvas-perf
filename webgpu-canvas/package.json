@@ -7,8 +7,8 @@
     "start": "serve ./dist"
   },
   "devDependencies": {
-    "@webgpu/types": "^0.1.50",
+    "@webgpu/types": "^0.1.60",
     "serve": "^14.2.4",
-    "typescript": "^5.6.3"
+    "typescript": "^5.8.3"
   }
 }

@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "description": "wasm-canvas test",
   "scripts": {
-    "build": "cargo build --release --target wasm32-unknown-unknown && wasm-bindgen --out-dir ./dist/ --target web ./target/wasm32-unknown-unknown/release/wasm_canvas.wasm && cp -a ./page/. ./dist",
+    "build": "RUSTFLAGS='--cfg getrandom_backend=\"wasm_js\"' cargo build --release --target wasm32-unknown-unknown && wasm-bindgen --out-dir ./dist/ --target web ./target/wasm32-unknown-unknown/release/wasm_canvas.wasm && cp -a ./page/. ./dist",
     "start": "serve ./dist"
   },
   "devDependencies": {
